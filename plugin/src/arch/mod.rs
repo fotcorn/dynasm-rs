@@ -8,6 +8,7 @@ use std::fmt::Debug;
 
 pub mod x64;
 pub mod aarch64;
+pub mod riscv;
 
 pub(crate) trait Arch : Debug + Send {
     fn name(&self) -> &str;
@@ -59,6 +60,7 @@ pub(crate) fn from_str(s: &str) -> Option<Box<dyn Arch>> {
         "x64" => Some(Box::new(x64::Archx64::default())),
         "x86" => Some(Box::new(x64::Archx86::default())),
         "aarch64" => Some(Box::new(aarch64::ArchAarch64::default())),
+        "riscv64" => Some(Box::new(riscv::ArchRiscv64::default())),
         "unknown" => Some(Box::new(DummyArch::new("unknown"))),
         _ => None
     }
@@ -70,5 +72,7 @@ pub const CURRENT_ARCH: &str = "x64";
 pub const CURRENT_ARCH: &str = "x86";
 #[cfg(target_arch="aarch64")]
 pub const CURRENT_ARCH: &str = "aarch64";
-#[cfg(not(any(target_arch="x86", target_arch="x86_64", target_arch="aarch64")))]
+#[cfg(target_arch="riscv64")]
+pub const CURRENT_ARCH: &str = "riscv64";
+#[cfg(not(any(target_arch="x86", target_arch="x86_64", target_arch="aarch64", target_arch="riscv64")))]
 pub const CURRENT_ARCH: &str = "unknown";
