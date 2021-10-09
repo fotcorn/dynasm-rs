@@ -5,6 +5,13 @@ use crate::arch::Arch;
 use crate::common::{Jump, Size, Stmt};
 use crate::State;
 
+mod parser;
+mod ast;
+
+struct Context<'a, 'b: 'a> {
+    pub state: &'a mut State<'b>
+}
+
 #[derive(Clone, Debug)]
 pub struct ArchRiscv64 {}
 
@@ -36,9 +43,16 @@ impl Arch for ArchRiscv64 {
 
     fn compile_instruction(
         &self,
-        _state: &mut State,
-        _input: parse::ParseStream,
+        state: &mut State,
+        input: parse::ParseStream,
     ) -> parse::Result<()> {
+        
+        let mut ctx = Context {
+            state
+        };
+
+        let (instruction, args) = parser::parse_instruction(&mut ctx, input)?;
+        
         Ok(())
     }
 }
